@@ -1,0 +1,116 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-2">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" href="{% url 'user_profile' %}">Главная</a>
+            <a class="list-group-item list-group-item-action active" href="{% url 'user_personal_info' %}">Личная информация</a>
+            <a class="list-group-item list-group-item-action" href="{% url 'user_security' %}">Безопасность</a>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div style="margin-top: 20px;">
+            <h3 class="" style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">Личная информация</h3>
+            <p style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">Сведения о вас и ваших настройках</p>
+        </div>
+        <div class="card" style="margin-bottom: 30px;">
+        <div class="card-body">
+            <h5 class="card-title" style="margin-bottom: 30px;">Основная информация</h5>
+            <div class="card">
+            <ul class="list-group list-group-flush">
+                <a href="{% url 'update_user_photo' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                <div class="row">
+                    <div class="col-md-3">ФОТОГРАФИЯ</div>
+                    <div class="col-md-7 text-secondary">Фотография помогает персонализировать ваш аккаунт</div>
+                    <div class="col-md-2" style="text-align: right;">
+                        {% if user.profile.photo %}
+                        <img src="{{user.profile.photo.url}}" class="rounded-circle border border-2" style="width: 50px; height: 50px;">
+                        {% else %}
+                        <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2" style="width: 50px;">
+                        {% endif %}
+                    </div>
+                </div>
+                </a>
+                <a href="{% url 'update_user_name' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                    <div class="row">
+                    <div class="col-md-3">ИМЯ</div>
+                    <div class="col-md-7">
+                        {% if user.profile.name %}
+                        {{user.profile.name}}
+                        {% else %}
+                        <div class="col-md-7 text-secondary">Не указано</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2" style="text-align: right;">&gt;</div>
+                    </div>
+                </a>
+                <a href="{% url 'update_user_date_of_birth' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                    <div class="row">
+                    <div class="col-md-3">ДАТА РОЖДЕНИЯ</div>
+                    <div class="col-md-7">
+                        {% if user.profile.date_of_birth %}
+                        {{user.profile.date_of_birth}}
+                        {% else %}
+                        <div class="col-md-7 text-secondary">Не указана</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2" style="text-align: right;">&gt;</div>
+                    </div>
+                </a>
+                <a href="{% url 'update_user_sex' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                    <div class="row">
+                    <div class="col-md-3">ПОЛ</div>
+                    <div class="col-md-7">
+                        {% if user.profile.sex != None%}
+                        {{user.profile.get_sex_display}}
+                        {% else %}
+                        <div class="col-md-7 text-secondary">Не указан</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2" style="text-align: right;">&gt;</div>
+                    </div>
+                </a>
+            </ul>
+            </div>
+        </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 30px;">Контактная информация</h5>
+                <div class="card">
+                <ul class="list-group list-group-flush">
+                    
+                    <label class="list-group-item" style="text-align: left;">
+                        <div class="row">
+                        <div class="col-md-3">ЭЛЕКТРОННАЯ ПОЧТА</div>
+                        <div class="col-md-7">
+                            {{user.email}}
+                        </div>
+                        
+                        </div>
+                    </label>
+                    <a href="{% url 'update_user_phone' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                        <div class="row">
+                        <div class="col-md-3">ТЕЛЕФОН</div>
+                        <div class="col-md-7">
+                            {% if user.profile.phone %}
+                            {{user.profile.phone}}
+                            {% else %}
+                            <div class="col-md-7 text-secondary">Не указан</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2" style="text-align: right;">&gt;</div>
+                        </div>
+                    </a>
+                    
+                </ul>
+                </div>
+            </div>
+            </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+            <form method="post" class="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card" style="margin-top: 20px">
+                <div class="card-body">
+                <p>Сначала подтвердите, что это ваш аккаунт</p>
+                {% if user.profile.photo %}
+                <img src="{{user.profile.photo.url}}" class="rounded-circle border border-2" style="width: 30px; height: 30px;">
+                {% else %}
+                <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2" style="width: 30px;">
+                {% endif %}
+                {{user.email}}
+                <div class="form-error">{{ form.non_fields_errors }}</div>
+                {% for f in form %}
+                <p>
+                <label class="form-label">{{ f.label }}</label>
+                {{f}}
+                <div class="form-text">{{ f.help_text }}</div>
+                <div class="error-as-text">{{ f.errors.as_text }}</div>
+                </p>
+                
+                {% endfor %}
+                <a href="{% url 'user_security' %}" class="btn btn-primary">Назад</a>
+                <button type="submit" class="btn btn-success">Далее</button>
+                </div>
+                </div>
+            </form>
+        
+    </div>
+</div>
+</div>
+
+{% endblock %}

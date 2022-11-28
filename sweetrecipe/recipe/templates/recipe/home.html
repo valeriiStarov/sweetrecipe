@@ -1,0 +1,102 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    {% if category_name %}
+    <h1 class="title">Выбранная категория - {{category_name}}</h1>
+    {% endif %}
+    {% if username_dessert %}
+    <h1 class="title">Рецепты от
+        {% if username_dessert.photo %}
+        <img src="{{username_dessert.photo.url}}" class="rounded-circle border border-2" style="height: 40px; width: 40px;">
+        {% else %}
+        <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2" style="height: 40px;" >
+        {% endif %}
+        {{username_dessert.name_or_username|slice:":20" }}
+    </h1>
+    {% endif %}
+
+    {% for dessert in desserts %}
+    <div class="col-md-3">
+        <div class="card" style="height: 480px; position:relative; margin-bottom: 20px;">
+            
+            <a href="{{ dessert.get_absolute_url }}">
+            <img src="{{dessert.photo.url}}" class="card-img-top" alt="" height="250px"></a>
+            
+            <div class="card-body">
+
+                {% if dessert.title|length > 26 %}
+                <h5 class="card-title">{{dessert.title|slice:":26"}}...</h5>
+                {% else %}
+                <h5 class="card-title">{{dessert.title}}</h5>
+                {% endif %}
+
+                {{dessert.is_published2}}
+
+                <p class="card-text">
+                {% for c in dessert.category.all|slice:":3" %}
+                <a href="{{c.get_absolute_url}}" class="btn btn-outline-warning" style="margin-right: 5px; margin-top: 5px;">{{c}}</a>
+                {% endfor %}
+                </p>
+                
+                
+
+                <p class="card-text" style="position: absolute; bottom: 50px">Время приготовления: {{dessert.cooking_time_mod}}</p>
+
+                <a href="{{ dessert.get_absolute_url }}" class="btn btn-primary" style="position:absolute; bottom: 20px">Рецепт</a>
+                
+                <p class="card-text" style="position:absolute; bottom: 12px; left: 100px;">
+                    <a href="{{dessert.profile.get_absolute_url}}" class="btn text-primary">
+                        {% if dessert.profile.photo %}
+                        <img src="{{dessert.profile.photo.url}}" class="rounded-circle border border-2" style="height: 40px; width: 40px;">
+                        {% else %}
+                        <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2" style="height: 40px;" >
+                        {% endif %}
+                        {{dessert.profile.name_or_username|slice:":14"}}
+                    </a>
+                </p>
+                
+            </div>
+            
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!--Pagination-->
+{% if page_obj.has_other_pages %}
+<nav>
+    <ul class="pagination pagination-lg justify-content-center" style="margin-top: 20px;">
+
+    {% if page_obj.has_previous %}
+    <li class="page-item" aria-current="page">
+    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+    </li>
+    {% endif %}
+
+    {% for page in paginator.page_range %}
+    {% if page_obj.number == page %}
+    <li class="page-item active" aria-current="page">
+    <span class="page-link">{{ page }}</span>
+    </li>
+    {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+    <li class="page-item">
+    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+    <a class="page-link" href="?page={{ page_obj.next_page_number }}">&gt;</a>
+    </li>
+    {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+<!--Конец Pagination-->
+</div>
+{% endblock %}

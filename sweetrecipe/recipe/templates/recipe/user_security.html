@@ -1,0 +1,46 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-2">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" href="{% url 'user_profile' %}">Главная</a>
+            <a class="list-group-item list-group-item-action" href="{% url 'user_personal_info' %}">Личная информация</a>
+            <a class="list-group-item list-group-item-action active" href="{% url 'user_security' %}">Безопасность</a>
+          </div>
+    </div>
+    <div class="col-md-8">
+        <div style="margin-top: 20px;">
+            <h3 class="" style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">Безопасность</h1>
+            <p style="margin-top: 10px; display: flex; align-items: center; justify-content: center;">Настройки и рекомендации, которые помогают защитить аккаунт</p>
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="card-body">
+                    <h5 class="card-title" style="margin-bottom: 30px;">Изменение пароля</h5>
+                    <div class="card">
+                    <ul class="list-group list-group-flush">
+                
+                        <a href="{% url 'update_pass' %}" class="list-group-item btn btn-outline-light" style="text-align: left;">
+                            <div class="row">
+                            <div class="col-md-3">СМЕНИТЬ ПАРОЛЬ</div>
+                            <div class="col-md-7">
+                            {% if user.profile.date_change_pass %}
+                            Дата последнего изменения: {{user.profile.date_change_pass|date:"d-m-Y H:i"}}
+                            {% else %}
+                            <div class="col-md-7 text-secondary">Дата последнего изменения: {{user.date_joined|date:"d-m-Y H:i"}}</div>
+                            {% endif %}
+                            </div>
+                            <div class="col-md-2" style="text-align: right;">&gt;</div>
+                            </div>
+                        </a>
+                        
+                    </ul>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

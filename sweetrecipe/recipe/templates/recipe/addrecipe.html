@@ -1,0 +1,81 @@
+{% extends 'recipe/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row" style="margin-top: 70px;">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h3>Основная информация о десерте</h3>
+        <form method="post" enctype="multipart/form-data" class="was-validated" id="form-container">
+        {% csrf_token %}
+
+            <div class="form-error">{{ form.non_fields_errors }}</div>
+            {% for f in main_form %}
+            <p>
+            <label class="form-label">{{ f.label }}</label>
+                {{f}}
+            <div class="form-text">{{ f.help_text }}</div>
+            <div class="error-as-text">{{ f.errors.as_text }}</div>
+            </p>
+            {% endfor %}
+
+            <h3 style="margin-bottom: 20px;">Добавление пошагового фото рецепта</h3>
+            {{formset.management_form}}
+            {% for form in formset %}
+            <!--Решает проблему с id required field-->
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+            <!--Решает проблему с id required field-->
+            <div class="recipe-form">
+            <p>
+            {% if title == 'Редактирование рецепта' %}
+                <span class="badge bg-success" style="margin-bottom: 10px;">{{forloop.counter}}</span>
+            {% endif %}
+            {{form.recipe_text.label}}
+            {{form.recipe_text}}
+            <div class="error-as-text">{{ form.recipe_text.errors.as_text }}</div>
+            {{form.image.label}}
+            {{form.image}}
+            <div class="error-as-text">{{ form.image.errors.as_text }}</div>
+            </p>
+            </div>
+            
+            {% endfor %}
+            
+            <button type="button" class="btn btn-primary" id="add-form">Добавить шаг</button>
+            <button type="submit" class="btn btn-success">Сохранить рецепт</button>
+            
+        </form>
+
+        <script>
+            let recipeForm = document.querySelectorAll(".recipe-form")
+            let container = document.querySelector("#form-container")
+            let addButton = document.querySelector("#add-form")
+            let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+    
+            let formNum = recipeForm.length-1
+            addButton.addEventListener('click', addForm)
+    
+            function addForm(e){
+                e.preventDefault()
+    
+                let newForm = recipeForm[0].cloneNode(true)
+                let formRegex = RegExp(`form-(\\d){1}-`,'g')
+    
+                formNum++
+                newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+                
+
+                container.insertBefore(newForm, addButton)
+                
+                totalForms.setAttribute('value', `${formNum+1}`)
+            }
+
+        </script>
+
+    </div>
+</div>
+</div>
+
+{% endblock %}

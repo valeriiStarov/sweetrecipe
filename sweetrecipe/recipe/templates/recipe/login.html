@@ -1,0 +1,24 @@
+{% extends 'recipe/base.html' %}
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form method="post" class="was-validated">
+            {% csrf_token %}
+            <div class="form-error">{{ form.non_fields_errors }}</div>
+            {% for f in form %}
+            <p>
+            <label class="form-label">{{ f.label }}</label>
+            {{f}}
+            <div class="form-text">{{ f.help_text }}</div>
+            <div class="error-as-text">{{ f.errors.as_text }}</div>
+            </p>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <a href="{% url 'reset_password' %}" class="btn text-primary">Забыли пароль?</a>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}

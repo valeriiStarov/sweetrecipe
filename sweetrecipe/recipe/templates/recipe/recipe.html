@@ -1,0 +1,133 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        {% if delete_recipe %}
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-title">
+                <h1 class="card-title" style="margin-top: 10px; margin-left: 13px">Удаление рецепта</h1>
+            </div>
+            <div class="card-body">
+                <h5 class="card-text">
+                    Вы уверены что хотите удалить выбранный рецепт?
+                </h5>
+                <form method="post">
+                {% csrf_token %}
+                <a href="{{dessert.get_absolute_url}}" class="btn btn-success">Не удалять</a>
+                <input type="submit" value="Удалить" class="btn btn-danger">
+                <p class="card-text">
+                    После удаления рецепта его нельзя будет восстановить
+                </p>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card" style="margin-top: 20px;">
+            <img src="{{dessert.photo.url}}" class="card-img-top" style="height: 480px;">
+            <div class="card-title">
+                <h1 class="card-title" style="margin-top: 10px; margin-left: 13px">{{ dessert.title }}</h1>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5">
+                <h5 class="card-title">Автор</h5>
+                <p class="card-text">
+                    <a href="{{dessert.profile.get_absolute_url}}" class="btn text-primary" style="padding: 0; margin-bottom: 10px; margin-top: 10px;">
+                    {% if dessert.profile.photo %}
+                    <img src="{{dessert.profile.photo.url}}" class="rounded-circle border border-2 user-photo-small" style="height: 70px; width: 70px;">
+                    {% else %}
+                    <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2 user-photo-small" style="height: 70px; width: 70px;">
+                    {% endif %}
+                    {{ dessert.profile.name_or_username }}
+                    </a>
+                </p></div>
+                <div class="col-md-4">
+                <h5 class="card-title">Дата публикации</h5>
+                <p class="card-text">{{ dessert.time_create|date:"d-m-Y" }}</p>
+                </div></div>
+                <h5 class="card-title">Описание</h5>
+                <p class="card-text">{{ dessert.description }}</p>
+                <h5 class="card-title">Ингредиенты</h5>
+                <p class="card-text">{{ dessert.ingredients }}</p>
+                <h5 class="card-title">Время готовки</h5>
+                <p class="card-text">{{ dessert.cooking_time_mod }}</p>
+                <h5 class="card-title">Категории</h5>
+                <p class="card-text">
+                    {% for category in dessert.category.all %}
+                    <label class="btn btn-outline-warning" style="margin: 3px;">{{category}}</label>
+                    {% endfor %}
+                </p>
+                <h3 class="card-title border-top border-2">Рецепт</h3>
+                {% for recipe in dessert.recipe.all %}
+                <div>
+                    <p class="card-text" style="margin-top: 20px;">
+                        <span class="badge bg-success">{{forloop.counter}}</span>
+                        {{recipe.recipe_text}}
+                    </p>
+                    <img src="{{recipe.image.url}}" class="card-img" style="height: 480px;">
+                </div>
+                {% endfor %}
+                {% if request.user == dessert.profile.user %}
+                <p style="margin-top: 20px;">
+                <a href="{{dessert.get_edit_url}}" class="btn btn-success">Редактировать</a>
+                <a href="{{dessert.get_delete_url}}" class="btn btn-danger">Удалить</a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-title">
+                <h1 class="card-title" style="margin-top: 10px; margin-left: 13px">Комментарии</h1>
+            </div>
+            <div class="card-body">
+                {% if request.user.is_authenticated %}
+                <form method="post" class="">
+                    {% csrf_token %}
+                    <div class="form-error">{{ form.non_fields_errors }}</div>
+                    {% for f in form %}
+                    <p>
+                    <label class="form-label">{{ f.label }}</label>
+                        {{f}}
+                    <div class="form-text">{{ f.help_text }}</div>
+                    <div class="error-as-text">{{ f.errors.as_text }}</div>
+                    </p>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-success">Добавить комментарий</button>
+                </form>
+                {% else %}
+                <h4 class="card-text">
+                    <a href="{% url 'login' %}" class="btn btn-primary">Авторизируйтесь</a>
+                    чтобы написать комментарий
+                </h4>
+                {% endif %}
+                <h1 style="margin-top: 40px;" class="border-top"></h1>
+                {% for comment in comments %}
+                <div class="row">
+                    <div class="col-md-2">
+                <a href="{{comment.profile.get_absolute_url}}" class="btn text-primary">
+                    {% if comment.profile.photo %}
+                    <img src="{{comment.profile.photo.url}}" class="rounded-circle border border-2 user-photo-small" style="height: 70px; width: 70px;">
+                    {% else %}
+                    <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2 user-photo-small" style="height: 70px; width: 70px;">
+                    {% endif %}
+                </a></div>
+                <div class="col-md-8">
+                <a href="{{comment.profile.get_absolute_url}}" class="btn text-primary" style="padding: 0; margin-bottom: 10px; margin-top: 10px;">
+                    {{comment.profile.name_or_username}}
+                </a>
+                {{comment.time_create|date:"d-m-Y"}}
+                <br>
+                {{comment.text}}
+                <br>
+                </div></div>
+                <h1 style="margin-top: 40px;" class="border-top"></h1>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

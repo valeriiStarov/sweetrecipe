@@ -1,0 +1,61 @@
+{% extends 'recipe/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-2">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="{% url 'user_profile' %}">Главная</a>
+            <a class="list-group-item list-group-item-action" href="{% url 'user_personal_info' %}">Личная информация</a>
+            <a class="list-group-item list-group-item-action" href="{% url 'user_security' %}">Безопасность</a>
+          </div>
+    </div>
+    <div class="col-md-8">
+        <div style="display: flex; align-items: center; justify-content: center;">
+            
+            {% if user.profile.photo %}
+            <img src="{{user.profile.photo.url}}" class="rounded-circle border border-2" style="width: 100px; height: 100px;">
+            {% else %}
+            <img src="{% static 'recipe/images/userphoto.jpg' %}" class="rounded-circle border border-2" style="width: 100px; height: 100px;">
+            {% endif %}
+            </div>
+            <h3 class="" style="display: flex; align-items: center; justify-content: center;">Добро пожаловать, 
+                {{ user.profile.name_or_username }}
+                !</h3>
+        <!--Карточка-->
+        <h1 style="margin-top: 30px; display: flex; align-items: center; justify-content: center;">Список ваших рецептов</h1>
+        <div class="card">
+        <div class="container-fluid">
+            <div class="row">
+                {% for dessert in user.profile.profile.all %}
+                <div class="col-md-4">
+                    <div class="card" style="margin-bottom: 20px; margin-top: 20px;">
+                        <a href="{{ dessert.get_absolute_url }}">
+                        <img src="{{dessert.photo.url}}" class="card-img-top" alt="" height="250px"></a>
+                        <div class="card-body">
+                            {% if dessert.title|length > 26 %}
+                            <h5 class="card-title">{{dessert.title|slice:":26"}}...</h5>
+                            {% else %}
+                            <h5 class="card-title">{{dessert.title}}</h5>
+                            {% endif %}
+                            <div class="row">
+                            <div class="col-md-6">
+                            <a href="{{ dessert.get_absolute_url }}" class="btn btn-primary">Рецепт</a></div>
+                            <div class="col-md-6" style="margin-top: 5px">
+                            {{ dessert.time_create|date:"d-m-Y" }}
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+        
+        </div>
+        <!--Конец карточки-->
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

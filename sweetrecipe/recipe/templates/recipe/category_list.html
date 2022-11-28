@@ -1,0 +1,29 @@
+{% extends 'recipe/base.html' %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+<div class="row margin-top-100">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <div class="card">
+            <img src="/static/recipe/images/category.jpg" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title">Список категорий</h5>
+               
+                {% for category in categorys %}
+            
+                    <a href="{{category.get_absolute_url}}" class="btn btn-outline-warning card-text" style="margin-top: 10px;">{{category.name}}</a>
+                
+                {% endfor %}
+            </div>
+        </div>
+        {% if request.user.is_staff %}
+        <a class="btn btn-success" style="margin-top: 20px;" href="{% url 'add_category' %}">Добавить категорию</a>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+{% endblock %}
